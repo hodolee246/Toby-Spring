@@ -1,4 +1,4 @@
-package com.example.toby.ch1;
+package com.example.toby.초난감DAO.connection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

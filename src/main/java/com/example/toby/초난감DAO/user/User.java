@@ -1,4 +1,4 @@
-package com.example.toby.ch1;
+package com.example.toby.초난감DAO.user;
 
 import lombok.*;
 

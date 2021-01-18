@@ -1,15 +1,18 @@
-package com.example.toby;
+package com.example.toby.초난감DAO;
 
-import com.example.toby.ch1.DaoFactory;
-import com.example.toby.ch1.User;
-import com.example.toby.ch1.UserDao;
+import com.example.toby.초난감DAO.daofactory.DaoFactory;
+import com.example.toby.초난감DAO.user.User;
+import com.example.toby.초난감DAO.UserDao;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.test.context.ContextConfiguration;
+
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -17,14 +20,26 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.sql.SQLException;
 
+@SpringBootTest
+@ContextConfiguration(classes = { DaoFactory.class })
 public class UserDaoTest {
 
     private UserDao dao;
 
+    @Autowired
+    private ApplicationContext context;
+
+    @Autowired
+    private UserDao userDao;
+
     @BeforeEach
     public void setUp() {
-        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+        System.out.println(this.context);
+        System.out.println(this);
         this.dao = context.getBean("userDao", UserDao.class);
+//        this.dao.setDataSource(this.dao.getDataSource());
+//
+//        userDao.setDataSource(userDao.getDataSource());
     }
 
     @Test
@@ -46,7 +61,6 @@ public class UserDaoTest {
         assertThat(userGet2.getName(), is(user2.getName()));
         assertThat(userGet2.getPwd(), is(user2.getPwd()));
     }
-
     @Test
     @DisplayName("deleteAllAndGetCount 예제")
     public void addAndGet2() throws SQLException, ClassNotFoundException {
@@ -86,8 +100,13 @@ public class UserDaoTest {
         dao.deleteAll();
         assertThat(dao.getCount(), is(0));
         // EmptyResultDataAccessException 이 발생 하게끔 Dao 를 구성
+        // exception 객체를 활용할때
         EmptyResultDataAccessException thrown = Assertions.assertThrows(EmptyResultDataAccessException.class, () -> {
             dao.get("??unknownId??");
+        });
+        // exception 객체를 활용하지 않을때
+        Assertions.assertThrows(EmptyResultDataAccessException.class, () -> {
+            dao.get("unknown_id");
         });
     }
 }
