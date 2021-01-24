@@ -1,5 +1,7 @@
 package com.example.toby.초난감DAO;
 
+import com.example.toby.초난감DAO.Exception.DuplicateUserIdException;
+import com.example.toby.초난감DAO.Exception.MysqlErrorNumbers;
 import com.example.toby.초난감DAO.user.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -30,8 +32,19 @@ public class UserDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void add(final User user) {
-        this.jdbcTemplate.update("insert into users(id, name, pwd) values(?,?,?)", user.getId(), user.getName(), user.getPwd());
+    public void add(final User user) throws DuplicateUserIdException {
+        this.jdbcTemplate.update("insert into users(id, name, pwd) values(?,?,?)", user.getId(), user.getName(), user.getPwd()); // add method none throw SQLException
+        try {
+            // 임시로 SQLException 발생 코드
+            DataSource dataSource = null;
+            Connection c = dataSource.getConnection();
+        } catch (SQLException e) {
+            if(e.getErrorCode() == MysqlErrorNumbers.ER_DUP_ENTRY) {
+                throw new DuplicateUserIdException(e);
+            } else {
+                throw new RuntimeException(e);
+            }
+        }
     }
     public User get(String id) throws SQLException {
         return this.jdbcTemplate.queryForObject("select * from users where id = ?", new Object[]{id}, this.userRowMapper);
@@ -44,34 +57,5 @@ public class UserDao {
     }
     public int getCount() {
         return this.jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
-
     }
-
-//    // 메소드로 분리한 try, catch. finally 코드
-//    public void  jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException {
-//        Connection c = null;
-//        PreparedStatement ps = null;
-//
-//        try {
-//            c= dataSource.getConnection();
-//            ps = stmt.makePreparedStatement(c);
-//            ps.executeUpdate();
-//        } catch (SQLException e) {
-//            throw e;
-//        } finally {
-//            if(ps != null) {
-//                try {
-//                    ps.close();
-//                } catch (SQLException e) {
-//                }
-//            }
-//            if(c != null) {
-//                try {
-//                    c.close();
-//                } catch (SQLException e) {
-//                }
-//            }
-//        }
-//    }
-
 }
