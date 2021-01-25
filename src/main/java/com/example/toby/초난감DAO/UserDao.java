@@ -3,6 +3,7 @@ package com.example.toby.초난감DAO;
 import com.example.toby.초난감DAO.Exception.DuplicateUserIdException;
 import com.example.toby.초난감DAO.Exception.MysqlErrorNumbers;
 import com.example.toby.초난감DAO.user.User;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -33,17 +34,12 @@ public class UserDao {
     }
 
     public void add(final User user) throws DuplicateUserIdException {
-        this.jdbcTemplate.update("insert into users(id, name, pwd) values(?,?,?)", user.getId(), user.getName(), user.getPwd()); // add method none throw SQLException
         try {
-            // 임시로 SQLException 발생 코드
-            DataSource dataSource = null;
-            Connection c = dataSource.getConnection();
-        } catch (SQLException e) {
-            if(e.getErrorCode() == MysqlErrorNumbers.ER_DUP_ENTRY) {
-                throw new DuplicateUserIdException(e);
-            } else {
-                throw new RuntimeException(e);
-            }
+            // add error 고유키 중복 발생!
+            this.jdbcTemplate.update("insert into users(id, name, pwd) values(?,?,?)", user.getId(), user.getName(), user.getPwd()); // add method none throw SQLException
+        } catch (DuplicateKeyException e) {
+            // 일단 임시로 trace 출력 후 새롭게 포장하여 던져준다.
+            throw new DuplicateUserIdException(e);
         }
     }
     public User get(String id) throws SQLException {

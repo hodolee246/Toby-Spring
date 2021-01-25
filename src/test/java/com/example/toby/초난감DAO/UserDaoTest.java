@@ -1,5 +1,6 @@
 package com.example.toby.초난감DAO;
 
+import com.example.toby.초난감DAO.Exception.DuplicateUserIdException;
 import com.example.toby.초난감DAO.daofactory.DaoFactory;
 import com.example.toby.초난감DAO.user.User;
 import com.example.toby.초난감DAO.UserDao;
@@ -141,5 +142,22 @@ public class UserDaoTest {
         assertThat(user1.getId(), is(user2.getId()));
         assertThat(user1.getName(), is(user2.getName()));
         assertThat(user1.getPwd(), is(user2.getPwd()));
+    }
+    @Test
+    public void addDuplicateUserIdExceptionTest() {
+        dao.deleteAll();
+        assertThat(dao.getCount(), is(0));
+        User user1 = new User("inwoo", "인우", "jiw");
+        User user2 = new User("amuge", "인우", "jiw");
+        User user3 = new User("inwoo", "인우", "jiw");
+
+        dao.add(user1);
+        Assertions.assertEquals(dao.getCount(), 1);
+        dao.add(user2);
+        Assertions.assertEquals(dao.getCount(), 2);
+        DuplicateUserIdException thrown = Assertions.assertThrows(DuplicateUserIdException.class, () -> {
+            dao.add(user3);
+        });
+        Assertions.assertEquals(dao.getCount(), 2);
     }
 }
