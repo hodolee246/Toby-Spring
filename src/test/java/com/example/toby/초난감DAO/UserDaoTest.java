@@ -3,17 +3,19 @@ package com.example.toby.초난감DAO;
 import com.example.toby.초난감DAO.Exception.DuplicateUserIdException;
 import com.example.toby.초난감DAO.daofactory.DaoFactory;
 import com.example.toby.초난감DAO.user.User;
-import com.example.toby.초난감DAO.UserDao;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
+import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.test.context.ContextConfiguration;
 
+
+import javax.sql.DataSource;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,24 +28,15 @@ import java.util.List;
 @ContextConfiguration(classes = { DaoFactory.class })
 public class UserDaoTest {
 
-    private UserDao dao;
+    @Autowired
+    UserDao dao;
 
     @Autowired
-    private ApplicationContext context;
-
-    @Autowired
-    private UserDao userDao;
-
-    @BeforeEach
-    public void setUp() {
-        System.out.println(this.context);
-        System.out.println(this);
-        this.dao = context.getBean("userDao", UserDao.class);
-    }
+    DataSource dataSource;
 
     @Test
     @DisplayName("addAndGet 예제")
-    public void addAndGet() throws SQLException, ClassNotFoundException {
+    public void addAndGet() throws SQLException {
         User user1 = new User("inwoo", "인우", "jiw");
         User user2 = new User("amuge", "아무개", "amg");
 
@@ -62,7 +55,7 @@ public class UserDaoTest {
     }
     @Test
     @DisplayName("deleteAllAndGetCount 예제")
-    public void addAndGet2() throws SQLException, ClassNotFoundException {
+    public void addAndGet2() throws SQLException {
         dao.deleteAll();
         assertThat(dao.getCount(), is(0));
 
@@ -76,7 +69,7 @@ public class UserDaoTest {
     }
     @Test
     @DisplayName("count 예제")
-    public void count() throws SQLException, ClassNotFoundException {
+    public void count() throws SQLException {
         User user1 = new User("aaa111", "인우1", "abc1");
         User user2 = new User("aaa112", "인우2", "abc2");
         User user3 = new User("aaa113", "인우3", "abc3");
@@ -144,6 +137,7 @@ public class UserDaoTest {
         assertThat(user1.getPwd(), is(user2.getPwd()));
     }
     @Test
+    @DisplayName("예외 확인예제")
     public void addDuplicateUserIdExceptionTest() {
         dao.deleteAll();
         assertThat(dao.getCount(), is(0));
@@ -155,9 +149,35 @@ public class UserDaoTest {
         Assertions.assertEquals(dao.getCount(), 1);
         dao.add(user2);
         Assertions.assertEquals(dao.getCount(), 2);
-        DuplicateUserIdException thrown = Assertions.assertThrows(DuplicateUserIdException.class, () -> {
+        // DuplicateUserIdException 예외 전환
+        Assertions.assertThrows(DuplicateUserIdException.class, () -> {
+            dao.addThrownDuplicateUserIdException(user3);
+        });
+        // add 예외
+        Assertions.assertThrows(DuplicateKeyException.class, () -> {
             dao.add(user3);
         });
         Assertions.assertEquals(dao.getCount(), 2);
+    }
+    @Test
+    @DisplayName("DataSource를 사용 하여 SQLException 전환 예제")
+    public void sqlExceptionTranslator() {
+        dao.deleteAll();
+        User user1 = new User("inwoo", "인우", "jiw");
+        User user3 = new User("inwoo", "인우", "jiw");
+
+        try {
+            dao.add(user1);
+            dao.add(user3);
+        } catch (DuplicateKeyException e) {
+            SQLException sqlException = (SQLException) e.getRootCause();
+            SQLExceptionTranslator set = new SQLErrorCodeSQLExceptionTranslator(this.dataSource);   // 코드를 이용해 SQLException의 전환
+            // 에러 메시지를 만들때 사용하는 정보이므로 null로 넣어도 상관없다.
+            DuplicateKeyException thrown = Assertions.assertThrows(DuplicateKeyException.class, () -> {
+               throw set.translate(null, null, sqlException);
+            });
+            Assertions.assertEquals(thrown.getClass(), DuplicateKeyException.class);
+            Assertions.assertEquals(set.translate(null, null, sqlException).getClass(), DuplicateKeyException.class);
+        }
     }
 }

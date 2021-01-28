@@ -13,15 +13,15 @@ public class MainClass {
         // DaoFactory
         DaoFactory daoFactory = new DaoFactory();
 
-        UserDao userDao1 = daoFactory.userDao();
-        UserDao userDao2 = daoFactory.userDao();
+        UserDaoJdbc userDao1 = daoFactory.userDao();
+        UserDaoJdbc userDao2 = daoFactory.userDao();
         log.info("userDao: '{}'", userDao1);
         log.info("userDao: '{}'", userDao2);
         // ApplicationContext
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(DaoFactory.class);
 
-        UserDao userDao3 = applicationContext.getBean("userDao", UserDao.class);
-        UserDao userDao4 = applicationContext.getBean("userDao", UserDao.class);
+        UserDaoJdbc userDao3 = applicationContext.getBean("userDao", UserDaoJdbc.class);
+        UserDaoJdbc userDao4 = applicationContext.getBean("userDao", UserDaoJdbc.class);
         log.info("userDao: '{}'", userDao3);
         log.info("userDao: '{}'", userDao4);
     }

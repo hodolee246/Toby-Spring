@@ -1,7 +1,6 @@
 package com.example.toby.초난감DAO;
 
 import com.example.toby.초난감DAO.user.User;
-import com.example.toby.초난감DAO.UserDao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
@@ -13,11 +12,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class UserDaoTest3 {
 
-    UserDao dao;
+    UserDaoJdbc dao;
 
     @BeforeEach
     public void setUp() throws SQLException {
-        dao = new UserDao();
+        dao = new UserDaoJdbc();
         dao.setDataSource(new SingleConnectionDataSource("jdbc:mysql://localhost:3306/sys?serverTimezone=UTC&characterEncoding=UTF-8", "root", "1234", true));
         dao.deleteAll();
     }
