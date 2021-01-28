@@ -2,7 +2,6 @@ package com.example.toby.초난감DAO;
 
 import com.example.toby.초난감DAO.daofactory.DaoFactoryTest;
 import com.example.toby.초난감DAO.user.User;
-import com.example.toby.초난감DAO.UserDao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class UserDaoTest2 {
 
     @Autowired
-    UserDao userDao;
+    UserDaoJdbc userDao;
 
     @BeforeEach
     public void setUp() throws SQLException {
