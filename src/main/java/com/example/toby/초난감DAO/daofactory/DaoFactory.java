@@ -17,6 +17,6 @@ public class DaoFactory {
 
     @Bean
     public DataSource dataSource() {
-        return new SingleConnectionDataSource("jdbc:mysql://localhost:3306/sys?serverTimezone=UTC&characterEncoding=UTF-8", "root", "1234", true);
+        return new SingleConnectionDataSource("jdbc:h2:tcp://localhost/~/test", "sa", "", true);
     }
 }

@@ -4,6 +4,7 @@ import com.example.toby.초난감DAO.Exception.DuplicateUserIdException;
 import com.example.toby.초난감DAO.daofactory.DaoFactory;
 import com.example.toby.초난감DAO.user.User;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,10 @@ import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
 import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.test.context.ContextConfiguration;
 
-
 import javax.sql.DataSource;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-
 
 import java.sql.SQLException;
 import java.util.List;
@@ -28,54 +27,54 @@ import java.util.List;
 @ContextConfiguration(classes = { DaoFactory.class })
 public class UserDaoTest {
 
+    User user1;
+    User user2;
+    User user3;
+    User user4;
+
     @Autowired
     UserDao dao;
 
     @Autowired
     DataSource dataSource;
 
+    @BeforeEach
+    public void setUp() {
+        this.user1 = new User("jiw1", "전인우1", "jiw123!", User.Level.GOLD, 100, 40);
+        this.user2 = new User("jiw2", "전인우2", "jiw123@", User.Level.BASIC, 1, 0);
+        this.user3 = new User("jiw3", "전인우3", "jiw123#", User.Level.SILVER, 55, 10);
+        this.user4 = new User("jiw4", "전인우4", "jiw123$", User.Level.SILVER, 60, 15);
+        dao.deleteAll();
+    }
+
+    private void checkSameUser(User user1, User user2) {
+        assertThat(user1.getId(), is(user2.getId()));
+        assertThat(user1.getName(), is(user2.getName()));
+        assertThat(user1.getPwd(), is(user2.getPwd()));
+        assertThat(user1.getLevel(), is(user2.getLevel()));
+        assertThat(user1.getLogin(), is(user2.getLogin()));
+        assertThat(user1.getRecommend(), is(user2.getRecommend()));
+    }
+
     @Test
     @DisplayName("addAndGet 예제")
-    public void addAndGet() throws SQLException {
-        User user1 = new User("inwoo", "인우", "jiw");
-        User user2 = new User("amuge", "아무개", "amg");
+    public void addAndGet() {
+        User addAndGetUser1 = new User("jiw1", "전인우1", "jiw123!", User.Level.GOLD, 100, 40);
+        User addAndGetUser2 = new User("jiw2", "전인우2", "jiw123@", User.Level.GOLD, 100, 40);
 
-        dao.deleteAll();
         assertThat(dao.getCount(), is(0));
-        dao.add(user1);
-        dao.add(user2);
+        dao.add(addAndGetUser1);
+        dao.add(addAndGetUser2);
         assertThat(dao.getCount(), is(2));
 
-        User userGet1 = dao.get("inwoo");
-        assertThat(userGet1.getName(), is(user1.getName()));
-        assertThat(userGet1.getPwd(), is(user1.getPwd()));
-        User userGet2 = dao.get("amuge");
-        assertThat(userGet2.getName(), is(user2.getName()));
-        assertThat(userGet2.getPwd(), is(user2.getPwd()));
+        User userGet1 = dao.get("jiw1");
+        User userGet2 = dao.get("jiw1");
+        checkSameUser(userGet1, userGet2);
     }
-    @Test
-    @DisplayName("deleteAllAndGetCount 예제")
-    public void addAndGet2() throws SQLException {
-        dao.deleteAll();
-        assertThat(dao.getCount(), is(0));
 
-        User user = new User("inwoo", "전인우", "jiw");
-        dao.add(user);
-        assertThat(dao.getCount(), is(1));
-
-        User user2 = dao.get("inwoo");
-        assertThat(user.getName(), is(user2.getName()));
-        assertThat(user.getPwd(), is(user2.getPwd()));
-    }
     @Test
     @DisplayName("count 예제")
-    public void count() throws SQLException {
-        User user1 = new User("aaa111", "인우1", "abc1");
-        User user2 = new User("aaa112", "인우2", "abc2");
-        User user3 = new User("aaa113", "인우3", "abc3");
-        User user4 = new User("aaa114", "인우4", "abc4");
-
-        dao.deleteAll();
+    public void count() {
         assertThat(dao.getCount(), is(0));
         dao.add(user1);
         assertThat(dao.getCount(), is(1));
@@ -88,8 +87,7 @@ public class UserDaoTest {
     }
     @Test
     @DisplayName("get예외 예제")
-    public void getUserFailed() throws SQLException, ClassNotFoundException {
-        dao.deleteAll();
+    public void getUserFailed() {
         assertThat(dao.getCount(), is(0));
         // EmptyResultDataAccessException 이 발생 하게끔 Dao 를 구성
         // exception 객체를 활용할때
@@ -104,12 +102,6 @@ public class UserDaoTest {
     @Test
     @DisplayName("getAll 예제")
     public void getAll() {
-        User user1 = new User("abc1", "inu", "abc1234");
-        User user2 = new User("abc2", "inWoo", "abc1");
-        User user3 = new User("abc3", "jiw", "abc12");
-
-        dao.deleteAll();
-
         List<User> users0 = dao.getAll();
         assertThat(users0.size(), is(0));
 
@@ -131,44 +123,36 @@ public class UserDaoTest {
         checkSameUser(user2, users2.get(1));
         checkSameUser(user3, users3.get(2));
     }
-    private void checkSameUser(User user1, User user2) {
-        assertThat(user1.getId(), is(user2.getId()));
-        assertThat(user1.getName(), is(user2.getName()));
-        assertThat(user1.getPwd(), is(user2.getPwd()));
-    }
+
     @Test
     @DisplayName("예외 확인예제")
     public void addDuplicateUserIdExceptionTest() {
-        dao.deleteAll();
+        User exceptionUser1 = new User("jiw1", "전인우1", "jiw123!", User.Level.GOLD, 100, 40);
+        User exceptionUser2 = new User("jiw123", "전인우123", "jiw123!@#", User.Level.GOLD, 100, 40);
+        User exceptionUser3 = new User("jiw1", "전인우1", "jiw123!", User.Level.GOLD, 100, 40);
         assertThat(dao.getCount(), is(0));
-        User user1 = new User("inwoo", "인우", "jiw");
-        User user2 = new User("amuge", "인우", "jiw");
-        User user3 = new User("inwoo", "인우", "jiw");
-
-        dao.add(user1);
+        dao.add(exceptionUser1);
         Assertions.assertEquals(dao.getCount(), 1);
-        dao.add(user2);
+        dao.add(exceptionUser2);
         Assertions.assertEquals(dao.getCount(), 2);
         // DuplicateUserIdException 예외 전환
         Assertions.assertThrows(DuplicateUserIdException.class, () -> {
-            dao.addThrownDuplicateUserIdException(user3);
+            dao.addThrownDuplicateUserIdException(exceptionUser3);
         });
         // add 예외
         Assertions.assertThrows(DuplicateKeyException.class, () -> {
-            dao.add(user3);
+            dao.add(exceptionUser3);
         });
         Assertions.assertEquals(dao.getCount(), 2);
     }
     @Test
     @DisplayName("DataSource를 사용 하여 SQLException 전환 예제")
     public void sqlExceptionTranslator() {
-        dao.deleteAll();
-        User user1 = new User("inwoo", "인우", "jiw");
-        User user3 = new User("inwoo", "인우", "jiw");
-
+        User exceptionUser1 = new User("jiw1", "전인우1", "jiw123!", User.Level.GOLD, 100, 40);
+        User exceptionUser2 = new User("jiw1", "전인우1", "jiw123!", User.Level.GOLD, 100, 40);
         try {
-            dao.add(user1);
-            dao.add(user3);
+            dao.add(exceptionUser1);
+            dao.add(exceptionUser2);
         } catch (DuplicateKeyException e) {
             SQLException sqlException = (SQLException) e.getRootCause();
             SQLExceptionTranslator set = new SQLErrorCodeSQLExceptionTranslator(this.dataSource);   // 코드를 이용해 SQLException의 전환

@@ -17,6 +17,9 @@ public class UserDaoJdbc implements UserDao {
         user.setId(rs.getString("id"));
         user.setName(rs.getString("name"));
         user.setPwd(rs.getString("pwd"));
+        user.setLevel(User.Level.valueOf(rs.getInt("level")));
+        user.setLogin(rs.getInt("login"));
+        user.setRecommend(rs.getInt("recommend"));
 
         return user;
     };
@@ -41,7 +44,7 @@ public class UserDaoJdbc implements UserDao {
 //            e.printStackTrace();
 //            throw new DuplicateUserIdException(e);
 //        }
-        this.jdbcTemplate.update("insert into users(id, name, pwd) values(?,?,?)", user.getId(), user.getName(), user.getPwd()); // add method none throw SQLException
+        this.jdbcTemplate.update("insert into users(id, name, pwd, level, login, recommend) values(?, ?, ?, ?, ?, ?)", user.getId(), user.getName(), user.getPwd(), user.getLevel().intValue(), user.getLogin(), user.getRecommend()); // add method none throw SQLException
     }
     @Override
     public User get(String id) {

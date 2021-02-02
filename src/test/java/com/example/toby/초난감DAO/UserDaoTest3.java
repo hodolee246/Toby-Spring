@@ -23,7 +23,7 @@ public class UserDaoTest3 {
 
     @Test
     public void add() throws SQLException {
-        User user = new User("id1234", "name1234", "pwd1234");
+        User user = new User("jiw1", "전인우1", "jiw123!", User.Level.GOLD, 100, 40);
         dao.add(user);
         User user2 = dao.get("id1234");
         assertThat(user.getId(), is(user2.getId()));
