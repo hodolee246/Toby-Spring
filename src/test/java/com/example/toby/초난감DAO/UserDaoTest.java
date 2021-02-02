@@ -173,7 +173,7 @@ public class UserDaoTest {
             SQLException sqlException = (SQLException) e.getRootCause();
             SQLExceptionTranslator set = new SQLErrorCodeSQLExceptionTranslator(this.dataSource);   // 코드를 이용해 SQLException의 전환
             // 에러 메시지를 만들때 사용하는 정보이므로 null로 넣어도 상관없다.
-            DuplicateKeyException thrown = Assertions.assertThrows(DuplicateKeyException.class, () -> {
+            DuplicateKeyException thrown = Assertions.assertThrows(DuplicateKeyException.class, () -> { // 다른 예외가 터져 상위 예외인 DuplicateKey가 터진다면 정확한 테스트가 맞는지? 그렇기에 class 이름으로 비교하면 정확한 테스트가 될 수 없음
                throw set.translate(null, null, sqlException);
             });
             Assertions.assertEquals(thrown.getClass(), DuplicateKeyException.class);
