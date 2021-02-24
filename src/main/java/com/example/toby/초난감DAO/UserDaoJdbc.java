@@ -2,7 +2,6 @@ package com.example.toby.초난감DAO;
 
 import com.example.toby.초난감DAO.Exception.DuplicateUserIdException;
 import com.example.toby.초난감DAO.user.User;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -64,5 +63,13 @@ public class UserDaoJdbc implements UserDao {
     @Override
     public int getCount() {
         return this.jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
+    }
+
+    @Override
+    public void update(User user1) {
+        this.jdbcTemplate.update(
+          "update users set name = ?, pwd = ?, level = ?, login = ?, recommend = ? where id = ?",
+                user1.getName(), user1.getPwd(), user1.getLevel().intValue(), user1.getLogin(), user1.getRecommend(), user1.getId()
+        );
     }
 }

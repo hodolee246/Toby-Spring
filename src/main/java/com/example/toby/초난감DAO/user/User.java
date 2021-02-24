@@ -9,24 +9,31 @@ import lombok.*;
 @AllArgsConstructor
 public class User {
 
-    private String id;      // 회원 아이디
-    private String name;    // 회원 이름
-    private String pwd;     // 회원 비밀번호
-    private Level level;    // 회원 등급
-    private int login;      // 회원 로그인 횟수
-    private int recommend;  // 회원 추천수
+    private String id;      // 아이디
+    private String name;    // 이름
+    private String pwd;     // 비밀번호
+    private Level level;    // 등급
+    private int login;      // 로그인 횟수
+    private int recommend;  // 추천수
+    private String email;   // 이메일
 
     public enum Level {
-        BASIC(1), SILVER(2), GOLD(3);
+        GOLD(3, null), SILVER(2, Level.GOLD), BASIC(1, Level.SILVER);
 
         private final int value;
+        private final Level next;
 
-        Level(int value) {
+        Level(int value, Level next) {
             this.value = value;
+            this.next = next;
         }
 
         public int intValue() {
             return this.value;
+        }
+
+        public Level nextLevel() {
+            return this.next;
         }
 
         public static Level valueOf(int value) {
@@ -36,6 +43,15 @@ public class User {
                 case 3: return GOLD;
                 default: throw new AssertionError("Unknown Value: '" + value + "'");
             }
+        }
+    }
+
+    public void upgradeLevel() {
+        Level nextLevel = this.level.nextLevel();
+        if(nextLevel == null) {
+            throw new IllegalArgumentException(this.level + "은 업그레이드가 불가능합니다.");
+        } else {
+            this.level = nextLevel;
         }
     }
 }

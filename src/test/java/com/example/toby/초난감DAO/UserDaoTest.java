@@ -40,10 +40,10 @@ public class UserDaoTest {
 
     @BeforeEach
     public void setUp() {
-        this.user1 = new User("jiw1", "전인우1", "jiw123!", User.Level.GOLD, 100, 40);
-        this.user2 = new User("jiw2", "전인우2", "jiw123@", User.Level.BASIC, 1, 0);
-        this.user3 = new User("jiw3", "전인우3", "jiw123#", User.Level.SILVER, 55, 10);
-        this.user4 = new User("jiw4", "전인우4", "jiw123$", User.Level.SILVER, 60, 15);
+        this.user1 = new User("jiw1", "전인우1", "jiw123!", User.Level.GOLD, 100, 40, "test@email.com");
+        this.user2 = new User("jiw2", "전인우2", "jiw123@", User.Level.BASIC, 1, 0, "test@email.com");
+        this.user3 = new User("jiw3", "전인우3", "jiw123#", User.Level.SILVER, 55, 10, "test@email.com");
+        this.user4 = new User("jiw4", "전인우4", "jiw123$", User.Level.SILVER, 60, 15, "test@email.com");
         dao.deleteAll();
     }
 
@@ -59,8 +59,8 @@ public class UserDaoTest {
     @Test
     @DisplayName("addAndGet 예제")
     public void addAndGet() {
-        User addAndGetUser1 = new User("jiw1", "전인우1", "jiw123!", User.Level.GOLD, 100, 40);
-        User addAndGetUser2 = new User("jiw2", "전인우2", "jiw123@", User.Level.GOLD, 100, 40);
+        User addAndGetUser1 = new User("jiw1", "전인우1", "jiw123!", User.Level.GOLD, 100, 40, "test@email.com");
+        User addAndGetUser2 = new User("jiw2", "전인우2", "jiw123@", User.Level.GOLD, 100, 40, "test@email.com");
 
         assertThat(dao.getCount(), is(0));
         dao.add(addAndGetUser1);
@@ -127,9 +127,9 @@ public class UserDaoTest {
     @Test
     @DisplayName("예외 확인예제")
     public void addDuplicateUserIdExceptionTest() {
-        User exceptionUser1 = new User("jiw1", "전인우1", "jiw123!", User.Level.GOLD, 100, 40);
-        User exceptionUser2 = new User("jiw123", "전인우123", "jiw123!@#", User.Level.GOLD, 100, 40);
-        User exceptionUser3 = new User("jiw1", "전인우1", "jiw123!", User.Level.GOLD, 100, 40);
+        User exceptionUser1 = new User("jiw1", "전인우1", "jiw123!", User.Level.GOLD, 100, 40, "test@email.com");
+        User exceptionUser2 = new User("jiw123", "전인우123", "jiw123!@#", User.Level.GOLD, 100, 40, "test@email.com");
+        User exceptionUser3 = new User("jiw1", "전인우1", "jiw123!", User.Level.GOLD, 100, 40, "test@email.com");
         assertThat(dao.getCount(), is(0));
         dao.add(exceptionUser1);
         Assertions.assertEquals(dao.getCount(), 1);
@@ -148,8 +148,8 @@ public class UserDaoTest {
     @Test
     @DisplayName("DataSource를 사용 하여 SQLException 전환 예제")
     public void sqlExceptionTranslator() {
-        User exceptionUser1 = new User("jiw1", "전인우1", "jiw123!", User.Level.GOLD, 100, 40);
-        User exceptionUser2 = new User("jiw1", "전인우1", "jiw123!", User.Level.GOLD, 100, 40);
+        User exceptionUser1 = new User("jiw1", "전인우1", "jiw123!", User.Level.GOLD, 100, 40, "test@email.com");
+        User exceptionUser2 = new User("jiw1", "전인우1", "jiw123!", User.Level.GOLD, 100, 40, "test@email.com");
         try {
             dao.add(exceptionUser1);
             dao.add(exceptionUser2);
@@ -164,4 +164,24 @@ public class UserDaoTest {
             Assertions.assertEquals(set.translate(null, null, sqlException).getClass(), DuplicateKeyException.class);
         }
     }
+    @Test
+    @DisplayName("update 예제")
+    public void update() {
+        dao.deleteAll();
+        dao.add(user1);
+        dao.add(user2);
+
+        user1.setName("인우전");
+        user1.setPwd("인우전1@#");
+        user1.setLevel(User.Level.GOLD);
+        user1.setLogin(1000);
+        user1.setRecommend(999);
+        dao.update(user1);
+
+        User user1update = dao.get(user1.getId());
+        User user2same = dao.get(user2.getId());
+        checkSameUser(user1, user1update);
+        checkSameUser(user2, user2same);
+    }
+
 }

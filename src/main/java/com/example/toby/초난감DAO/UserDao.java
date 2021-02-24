@@ -12,6 +12,7 @@ public interface UserDao {
     List<User> getAll();
     void deleteAll();
     int getCount();
+    void update(User user1);
     // 예외전환용 디폴트 메소드
     default void addThrownDuplicateUserIdException(User user) {
         try {

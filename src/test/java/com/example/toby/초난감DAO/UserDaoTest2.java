@@ -33,7 +33,7 @@ public class UserDaoTest2 {
     @Test
     public void add() throws SQLException, ClassNotFoundException {
         userDao.deleteAll();
-        User user = new User("jiw1", "전인우1", "jiw123!", User.Level.GOLD, 100, 40);
+        User user = new User("jiw1", "전인우1", "jiw123!", User.Level.GOLD, 100, 40, "test@email.com");
         userDao.add(user);
         User user2 = userDao.get("asdf1234");
         System.out.println(userDao);
