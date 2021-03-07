@@ -1,7 +1,7 @@
-package com.example.toby.초난감DAO;
+package com.example.toby.초난감DAO.service;
 
+import com.example.toby.초난감DAO.UserDao;
 import com.example.toby.초난감DAO.daofactory.DaoFactory;
-import com.example.toby.초난감DAO.service.UserService;
 import com.example.toby.초난감DAO.user.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,15 +15,14 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.example.toby.초난감DAO.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
-import static com.example.toby.초난감DAO.service.UserService.MIN_RECOMMEND_FOR_GOLD;
+import static com.example.toby.초난감DAO.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
+import static com.example.toby.초난감DAO.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOLD;
 
 @SpringBootTest
 @ContextConfiguration(classes = { DaoFactory.class })
@@ -31,6 +30,9 @@ public class UserServiceTest {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserServiceImpl userServiceImpl;
 
     @Autowired
     UserDao userDao;
@@ -82,9 +84,9 @@ public class UserServiceTest {
         for(User user : users) userDao.add(user);
 
         MockMailSender mockMailSender = new MockMailSender();
-        userService.setMailSender(mockMailSender);
-
-        userService.upgradeLevels();
+        UserServiceImpl userServiceImpl = new UserServiceImpl(userDao, mockMailSender);
+        UserServiceTx txUserService = new UserServiceTx(transactionManager, userServiceImpl);
+        txUserService.upgradeLevels();
 
         checkLevelUpgraded(users.get(0), false);
         checkLevelUpgraded(users.get(1), true);
@@ -126,12 +128,15 @@ public class UserServiceTest {
     @Test
     @DisplayName("예외 발생 시 작업 취소 여부 테스트")
     public void upgradeAllOrNothing() throws Exception {
+        TestUserService testUserService = new TestUserService(userDao, mailSender, users.get(3).getId());
+
+        UserServiceTx txUserService = new UserServiceTx(transactionManager, testUserService);
+
         userDao.deleteAll();
-        UserService testUserService = new TestUserService(this.userDao, users.get(3).getId(), dataSource, transactionManager, mailSender);
         for(User user : users) userDao.add(user);
 
         try {
-            testUserService.upgradeLevels();
+            txUserService.upgradeLevels();
             Assertions.fail("TestUserServiceException expected");
         } catch (TestUserServiceException e) {
 
@@ -139,18 +144,13 @@ public class UserServiceTest {
         checkLevelUpgraded(users.get(1), false);
     }
 
-    static class TestUserService extends UserService {
+    static class TestUserService extends UserServiceImpl {
 
         private String id;
-        private DataSource dataSource;
-        private PlatformTransactionManager transactionManager;
-        private MailSender mailSender;
 
-        public TestUserService(UserDao userDao, String id, DataSource dataSource, PlatformTransactionManager transactionManager, MailSender mailSender) {
-            super(userDao, dataSource, transactionManager, mailSender);
+        public TestUserService(UserDao userDao, MailSender mailSender, String id) {
+            super(userDao, mailSender);
             this.id = id;
-            this.dataSource = dataSource;
-            this.transactionManager = transactionManager;
         }
 
         @Override

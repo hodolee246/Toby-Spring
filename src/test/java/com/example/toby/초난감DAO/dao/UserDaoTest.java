@@ -1,6 +1,7 @@
-package com.example.toby.초난감DAO;
+package com.example.toby.초난감DAO.dao;
 
 import com.example.toby.초난감DAO.Exception.DuplicateUserIdException;
+import com.example.toby.초난감DAO.UserDao;
 import com.example.toby.초난감DAO.daofactory.DaoFactory;
 import com.example.toby.초난감DAO.user.User;
 import org.junit.jupiter.api.Assertions;

@@ -3,6 +3,8 @@ package com.example.toby.초난감DAO.daofactory;
 import com.example.toby.초난감DAO.UserDaoJdbc;
 import com.example.toby.초난감DAO.service.DummyMailSender;
 import com.example.toby.초난감DAO.service.UserService;
+import com.example.toby.초난감DAO.service.UserServiceImpl;
+import com.example.toby.초난감DAO.service.UserServiceTx;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -35,7 +37,12 @@ public class DaoFactory {
     }
 
     @Bean
-    public UserService userService() {
-        return new UserService(userDao(), dataSource(), transactionManager(), mailSender());
+    public UserServiceTx userService() {
+        return new UserServiceTx(transactionManager(), userSErviceImpl());
+    }
+
+    @Bean
+    public UserServiceImpl userSErviceImpl() {
+        return new UserServiceImpl(userDao(), mailSender());
     }
 }
