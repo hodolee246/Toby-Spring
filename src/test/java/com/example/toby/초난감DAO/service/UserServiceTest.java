@@ -77,28 +77,32 @@ public class UserServiceTest {
         Assertions.assertEquals(userUpdate.getLevel(), expectedLevel);
     }
     @Test
-    @DirtiesContext
-    @DisplayName("정확한 user 레벨 업그레이드 테스트")    //  user 레벨 업그레이드 테스트를 개선한 업그레이트 테스트
+    @DisplayName("정확한 user 레벨 업그레이드 테스트")    //  user 레벨 업그레이드 테스트를 개선한 업그레이드 테스트
     public void upgradeLevels() throws Exception {
-        userDao.deleteAll();
-        for(User user : users) userDao.add(user);
-
+        MockUserDao mockUserDao = new MockUserDao(this.users);
         MockMailSender mockMailSender = new MockMailSender();
-        UserServiceImpl userServiceImpl = new UserServiceImpl(userDao, mockMailSender);
-        UserServiceTx txUserService = new UserServiceTx(transactionManager, userServiceImpl);
-        txUserService.upgradeLevels();
+        UserServiceImpl userServiceImpl = new UserServiceImpl(mockUserDao, mockMailSender);
 
-        checkLevelUpgraded(users.get(0), false);
-        checkLevelUpgraded(users.get(1), true);
-        checkLevelUpgraded(users.get(2), false);
-        checkLevelUpgraded(users.get(3), true);
-        checkLevelUpgraded(users.get(4), false);
+        userServiceImpl.upgradeLevels();
+
+        List<User> updated = mockUserDao.getUpdated();
+        Assertions.assertEquals(updated.size(), 2);
+        checkUserAndLevel(updated.get(0), "InWooJeon2", User.Level.SILVER);
+        checkUserAndLevel(updated.get(1), "InWooJeon4", User.Level.GOLD);
+
+        userService.upgradeLevels();
 
         List<String> request = mockMailSender.getRequest();
         Assertions.assertEquals(request.size(), 2);
         Assertions.assertEquals(request.get(0), users.get(1).getEmail());
-        Assertions.assertEquals(request.get(3), users.get(4).getEmail());
+        Assertions.assertEquals(request.get(1), users.get(3).getEmail());
     }
+
+    private void checkUserAndLevel(User updated, String expectedId, User.Level expectedLevel) {
+        Assertions.assertEquals(updated.getId(), expectedId);
+        Assertions.assertEquals(updated.getLevel(), expectedLevel);
+    }
+
     private void checkLevelUpgraded(User user, boolean upgraded) {
         User userUpdate = userDao.get(user.getId());
         if(upgraded) {
@@ -107,6 +111,7 @@ public class UserServiceTest {
             Assertions.assertEquals(userUpdate.getLevel(), user.getLevel());
         }
     }
+
     @Test
     @DisplayName("user 추가 기본 레벨 테스트")
     public void add() {
@@ -159,8 +164,16 @@ public class UserServiceTest {
             super.upgradeLevel(user);
         }
     }
+
+    /**
+     * 테스트용 Exception
+     */
     static class TestUserServiceException extends RuntimeException {
     }
+
+    /**
+     * 테스트용 MockMailSender 클래스
+     */
     static class MockMailSender implements MailSender {
 
         private List<String> request = new ArrayList<>();   // UserServiceTest 로 부터 전송받은 메일 주소를 저장해두고 읽을 수 있게 사용하는 변수
@@ -177,5 +190,37 @@ public class UserServiceTest {
         @Override
         public void send(SimpleMailMessage... simpleMailMessages) throws MailException {
         }
+    }
+    /**
+     * 테스트용 MockUserDao
+     */
+    static class MockUserDao implements UserDao {
+
+        private List<User> users;                       // 레벨 업그레이드 후부 User 오브젝트 목록
+        private List<User> updated = new ArrayList<>(); // 업그레이드 대상 오브젝트를 저장해둘 목록
+
+        private MockUserDao(List<User> users) {
+            this.users = users;
+        }
+
+        public List<User> getUpdated() {
+            return this.updated;
+        }
+
+        public List<User> getAll() {
+            return this.users;
+        }
+        public void update(User user) {
+            updated.add(user);
+        }
+
+        @Override
+        public void add(User user) { throw new UnsupportedOperationException(); }
+        @Override
+        public User get(String id) { throw new UnsupportedOperationException(); }
+        @Override
+        public void deleteAll() { throw new UnsupportedOperationException(); }
+        @Override
+        public int getCount() { throw new UnsupportedOperationException(); }
     }
 }
