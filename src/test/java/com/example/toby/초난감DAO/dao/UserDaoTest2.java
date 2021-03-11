@@ -1,7 +1,7 @@
 package com.example.toby.초난감DAO.dao;
 
 import com.example.toby.초난감DAO.UserDaoJdbc;
-import com.example.toby.초난감DAO.daofactory.DaoFactoryTest;
+import com.example.toby.초난감DAO.config.DaoFactoryTest;
 import com.example.toby.초난감DAO.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

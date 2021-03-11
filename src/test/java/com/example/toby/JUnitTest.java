@@ -1,6 +1,6 @@
 package com.example.toby;
 
-import com.example.toby.초난감DAO.daofactory.DaoFactory;
+import com.example.toby.초난감DAO.config.DaoFactory;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

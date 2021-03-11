@@ -7,6 +7,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+/**
+ * UserServie 트랜잭션 로직을 분리한 클래스
+ */
 public class UserServiceTx implements UserService {
 
     PlatformTransactionManager transactionManager;

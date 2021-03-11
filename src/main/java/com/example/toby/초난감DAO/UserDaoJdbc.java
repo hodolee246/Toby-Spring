@@ -19,6 +19,7 @@ public class UserDaoJdbc implements UserDao {
         user.setLevel(User.Level.valueOf(rs.getInt("level")));
         user.setLogin(rs.getInt("login"));
         user.setRecommend(rs.getInt("recommend"));
+        user.setEmail(rs.getString("email"));
 
         return user;
     };
@@ -35,15 +36,7 @@ public class UserDaoJdbc implements UserDao {
 
     @Override
     public void add(final User user) throws DuplicateUserIdException {
-//        try {
-//            // add error 고유키 중복 발생!
-
-//        } catch (DuplicateKeyException e) {
-//            // 일단 임시로 trace 출력 후 새롭게 포장하여 던져준다.
-//            e.printStackTrace();
-//            throw new DuplicateUserIdException(e);
-//        }
-        this.jdbcTemplate.update("insert into users(id, name, pwd, level, login, recommend) values(?, ?, ?, ?, ?, ?)", user.getId(), user.getName(), user.getPwd(), user.getLevel().intValue(), user.getLogin(), user.getRecommend()); // add method none throw SQLException
+        this.jdbcTemplate.update("insert into users(id, name, pwd, level, login, recommend, email) values(?, ?, ?, ?, ?, ?, ?)", user.getId(), user.getName(), user.getPwd(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getEmail()); // add method none throw SQLException
     }
     @Override
     public User get(String id) {
@@ -68,8 +61,8 @@ public class UserDaoJdbc implements UserDao {
     @Override
     public void update(User user1) {
         this.jdbcTemplate.update(
-          "update users set name = ?, pwd = ?, level = ?, login = ?, recommend = ? where id = ?",
-                user1.getName(), user1.getPwd(), user1.getLevel().intValue(), user1.getLogin(), user1.getRecommend(), user1.getId()
+          "update users set name = ?, pwd = ?, level = ?, login = ?, recommend = ?, email = ? where id = ?",
+                user1.getName(), user1.getPwd(), user1.getLevel().intValue(), user1.getLogin(), user1.getRecommend(), user1.getEmail(), user1.getId()
         );
     }
 }

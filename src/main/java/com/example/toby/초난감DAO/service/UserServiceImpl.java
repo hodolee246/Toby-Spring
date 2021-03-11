@@ -4,11 +4,12 @@ import com.example.toby.초난감DAO.UserDao;
 import com.example.toby.초난감DAO.user.User;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+/**
+ * UserService 트랜잭션 코드를 제거한 비즈니스 로직
+ */
 public class UserServiceImpl implements UserService {
 
     public static final int MIN_LOGCOUNT_FOR_SILVER = 50;

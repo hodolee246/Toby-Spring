@@ -1,4 +1,4 @@
-package com.example.toby.초난감DAO.daofactory;
+package com.example.toby.초난감DAO.config;
 
 import com.example.toby.초난감DAO.UserDaoJdbc;
 import org.springframework.context.annotation.Bean;
