@@ -1,7 +1,7 @@
 package com.example.toby;
 
 
-import com.example.toby.초난감DAO.템플릿콜백.Calculator;
+import com.example.toby.jiw.템플릿콜백.Calculator;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
