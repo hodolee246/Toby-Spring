@@ -1,9 +1,8 @@
-package com.example.toby.초난감DAO.config;
+package com.example.toby.jiw.config;
 
-import com.example.toby.초난감DAO.UserDaoJdbc;
-import com.example.toby.초난감DAO.service.DummyMailSender;
-import com.example.toby.초난감DAO.service.UserServiceImpl;
-import com.example.toby.초난감DAO.service.UserServiceTx;
+import com.example.toby.jiw.dao.UserDaoJdbc;
+import com.example.toby.jiw.service.DummyMailSender;
+import com.example.toby.jiw.service.UserServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -17,7 +16,8 @@ public class DaoFactory {
 
     @Bean
     public DataSource dataSource() {
-        return new SingleConnectionDataSource("jdbc:h2:tcp://localhost/~/test", "sa", "", true);
+        return new SingleConnectionDataSource("jdbc:h2:tcp://localhost/~/test", "sa", "", true);    // ch6 aop @Transactional 을 사용한 DB테스트 시 H2는 실패하는 문제발생
+//        return new SingleConnectionDataSource("jdbc:mysql://localhost:3306/sys?serverTimezone=UTC&characterEncoding=UTF-8", "root", "1234", true);
     }
 
     @Bean
@@ -35,13 +35,9 @@ public class DaoFactory {
         return new UserDaoJdbc(dataSource());
     }
 
-//    @Bean
-//    public UserServiceTx userService() {
-//        return new UserServiceTx(transactionManager(), userServiceImpl());
-//    }
-
     @Bean
-    public UserServiceImpl userServiceImpl() {
+    public UserServiceImpl userService() {
         return new UserServiceImpl(userDao(), mailSender());
     }
+
 }
