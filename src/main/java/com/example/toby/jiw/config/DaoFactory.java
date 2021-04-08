@@ -10,6 +10,8 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.mail.MailSender;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 public class DaoFactory {
@@ -32,7 +34,14 @@ public class DaoFactory {
 
     @Bean
     public UserDaoJdbc userDao() {
-        return new UserDaoJdbc("insert into users(id, name, pwd, level, login, recommend, email) values(?, ?, ?, ?, ?, ?, ?)", dataSource());
+        Map<String ,String> sqlMap = new HashMap<>();
+        sqlMap.put("add", "insert into users(id, name, pwd, level, login, recommend, email) values(?, ?, ?, ?, ?, ?, ?)");
+        sqlMap.put("get", "select * from users where id = ?");
+        sqlMap.put("getAll", "select * from users order by id");
+        sqlMap.put("deleteAll", "delete from users");
+        sqlMap.put("getCount", "select count(*) from users");
+        sqlMap.put("update", "update users set name = ?, pwd = ?, level = ?, login = ?, recommend = ?, email = ? where id = ?");
+        return new UserDaoJdbc(sqlMap, dataSource());
     }
 
     @Bean
