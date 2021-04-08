@@ -32,7 +32,7 @@ public class DaoFactory {
 
     @Bean
     public UserDaoJdbc userDao() {
-        return new UserDaoJdbc(dataSource());
+        return new UserDaoJdbc("insert into users(id, name, pwd, level, login, recommend, email) values(?, ?, ?, ?, ?, ?, ?)", dataSource());
     }
 
     @Bean

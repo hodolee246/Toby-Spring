@@ -10,6 +10,8 @@ import java.util.List;
 
 public class UserDaoJdbc implements UserDao {
 
+    private String sqlAdd;
+
     private JdbcTemplate jdbcTemplate;
     private RowMapper<User> userRowMapper = (rs, rowNumber) -> {
         User user = new User();
@@ -26,17 +28,22 @@ public class UserDaoJdbc implements UserDao {
 
     public UserDaoJdbc() {}
 
-    public UserDaoJdbc(DataSource dataSource) {
+    public UserDaoJdbc(String sqlAdd, DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.sqlAdd = sqlAdd;
     }
 
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    public void setSqlAdd(String sqlAdd) {
+        this.sqlAdd = sqlAdd;
+    }
+
     @Override
     public void add(final User user) throws DuplicateUserIdException {
-        this.jdbcTemplate.update("insert into users(id, name, pwd, level, login, recommend, email) values(?, ?, ?, ?, ?, ?, ?)", user.getId(), user.getName(), user.getPwd(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getEmail()); // add method none throw SQLException
+        this.jdbcTemplate.update(this.sqlAdd, user.getId(), user.getName(), user.getPwd(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getEmail()); // add method none throw SQLException
     }
     @Override
     public User get(String id) {
