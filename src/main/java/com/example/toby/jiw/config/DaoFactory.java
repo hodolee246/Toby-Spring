@@ -1,6 +1,8 @@
 package com.example.toby.jiw.config;
 
 import com.example.toby.jiw.dao.UserDaoJdbc;
+import com.example.toby.jiw.dao.sql.SimpleSqlService;
+import com.example.toby.jiw.dao.sql.SqlService;
 import com.example.toby.jiw.service.DummyMailSender;
 import com.example.toby.jiw.service.UserServiceImpl;
 import org.springframework.context.annotation.Bean;
@@ -34,14 +36,19 @@ public class DaoFactory {
 
     @Bean
     public UserDaoJdbc userDao() {
+        return new UserDaoJdbc(sqlService(), dataSource());
+    }
+
+    @Bean
+    public SimpleSqlService sqlService() {
         Map<String ,String> sqlMap = new HashMap<>();
-        sqlMap.put("add", "insert into users(id, name, pwd, level, login, recommend, email) values(?, ?, ?, ?, ?, ?, ?)");
-        sqlMap.put("get", "select * from users where id = ?");
-        sqlMap.put("getAll", "select * from users order by id");
-        sqlMap.put("deleteAll", "delete from users");
-        sqlMap.put("getCount", "select count(*) from users");
-        sqlMap.put("update", "update users set name = ?, pwd = ?, level = ?, login = ?, recommend = ?, email = ? where id = ?");
-        return new UserDaoJdbc(sqlMap, dataSource());
+        sqlMap.put("userAdd", "insert into users(id, name, pwd, level, login, recommend, email) values(?, ?, ?, ?, ?, ?, ?)");
+        sqlMap.put("userGet", "select * from users where id = ?");
+        sqlMap.put("userGetAll", "select * from users order by id");
+        sqlMap.put("userDeleteAll", "delete from users");
+        sqlMap.put("userGetCount", "select count(*) from users");
+        sqlMap.put("userUpdate", "update users set name = ?, pwd = ?, level = ?, login = ?, recommend = ?, email = ? where id = ?");
+        return new SimpleSqlService(sqlMap);
     }
 
     @Bean

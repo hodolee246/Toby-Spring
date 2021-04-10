@@ -1,6 +1,6 @@
 package com.example.toby.jiw.dao;
 
-import com.example.toby.jiw.Exception.DuplicateUserIdException;
+import com.example.toby.jiw.exception.DuplicateUserIdException;
 import com.example.toby.jiw.config.DaoFactory;
 import com.example.toby.jiw.user.User;
 import org.junit.jupiter.api.Assertions;
