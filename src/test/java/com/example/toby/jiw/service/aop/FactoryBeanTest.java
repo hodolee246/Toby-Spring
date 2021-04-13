@@ -1,7 +1,6 @@
 package com.example.toby.jiw.service.aop;
 
 import com.example.toby.jiw.common.config.DaoFactory;
-import com.example.toby.jiw.common.config.FactoryBean;
 import com.example.toby.jiw.service.proxy.learningtest.Message;
 import com.example.toby.jiw.service.proxy.learningtest.MessageFactoryBean;
 import org.junit.jupiter.api.Assertions;
@@ -15,7 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
  *
  */
 @SpringBootTest
-@ContextConfiguration(classes = {FactoryBean.class, DaoFactory.class})
+@ContextConfiguration(classes = {DaoFactory.class})
 public class FactoryBeanTest {
 
     @Autowired

@@ -1,7 +1,7 @@
 package com.example.toby.jiw.common.config;
 
 import com.example.toby.jiw.dao.UserDaoJdbc;
-import com.example.toby.jiw.dao.sql.XmlSqlService;
+import com.example.toby.jiw.dao.sql.*;
 import com.example.toby.jiw.service.DummyMailSender;
 import com.example.toby.jiw.service.UserServiceImpl;
 import org.springframework.context.annotation.Bean;
@@ -37,8 +37,18 @@ public class DaoFactory {
     }
 
     @Bean
-    public XmlSqlService sqlService() {
-        return new XmlSqlService();
+    public BaseSqlService sqlService() {
+        return new BaseSqlService(sqlReader(), sqlRegistry());
+    }
+
+    @Bean
+    public JaxbXmlSqlReader sqlReader() {
+        return new JaxbXmlSqlReader("/sql/sqlmap.xml");
+    }
+
+    @Bean
+    public HashMapSqlRegistry sqlRegistry() {
+        return new HashMapSqlRegistry();
     }
 
     @Bean

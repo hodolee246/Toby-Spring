@@ -1,6 +1,5 @@
 package com.example.toby.jiw.dao;
 
-import com.example.toby.jiw.common.config.DaoFactoryTest;
 import com.example.toby.jiw.domain.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @DirtiesContext
-@ContextConfiguration(classes = { DaoFactoryTest.class })
 @SpringBootTest
 public class UserDaoTest2 {
 
@@ -25,13 +23,13 @@ public class UserDaoTest2 {
     UserDaoJdbc userDao;
 
     @BeforeEach
-    public void setUp() throws SQLException {
+    public void setUp() {
         DataSource dataSource = new SingleConnectionDataSource("jdbc:mysql://localhost:3306/sys?serverTimezone=UTC&characterEncoding=UTF-8", "root", "1234", true);
         userDao.setDataSource(dataSource);
     }
 
     @Test
-    public void add() throws SQLException, ClassNotFoundException {
+    public void add() {
         userDao.deleteAll();
         User user = new User("jiw1", "전인우1", "jiw123!", User.Level.GOLD, 100, 40, "test@email.com");
         userDao.add(user);
@@ -41,7 +39,7 @@ public class UserDaoTest2 {
     }
 
     @Test
-    public void get() throws SQLException {
+    public void get() {
         User user = userDao.get("asdf1234");
         System.out.println(userDao);
         assertThat("asdf1234", is(user.getId()));

@@ -1,5 +1,6 @@
 package com.example.toby.jiw.dao;
 
+import com.example.toby.jiw.common.config.AopConfig;
 import com.example.toby.jiw.common.exception.DuplicateUserIdException;
 import com.example.toby.jiw.common.config.DaoFactory;
 import com.example.toby.jiw.domain.user.User;
@@ -24,7 +25,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @SpringBootTest
-@ContextConfiguration(classes = { DaoFactory.class })
+@ContextConfiguration(classes = { DaoFactory.class, AopConfig.class })
 public class UserDaoTest {
 
     User user1;

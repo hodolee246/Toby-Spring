@@ -3,7 +3,6 @@ package com.example.toby.jiw.service;
 import com.example.toby.jiw.dao.UserDao;
 import com.example.toby.jiw.common.config.AopConfig;
 import com.example.toby.jiw.common.config.DaoFactory;
-import com.example.toby.jiw.common.config.FactoryBean;
 import com.example.toby.jiw.domain.user.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +34,7 @@ import static com.example.toby.jiw.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOL
  *
  */
 @SpringBootTest
-@ContextConfiguration(classes = {FactoryBean.class, DaoFactory.class, AopConfig.class})
+@ContextConfiguration(classes = {DaoFactory.class, AopConfig.class})
 public class UserServiceTest {
 
     @Autowired UserService userService;
