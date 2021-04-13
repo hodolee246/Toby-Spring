@@ -1,10 +1,10 @@
 package com.example.toby.jiw.service;
 
 import com.example.toby.jiw.dao.UserDao;
-import com.example.toby.jiw.config.AopConfig;
-import com.example.toby.jiw.config.DaoFactory;
-import com.example.toby.jiw.config.FactoryBean;
-import com.example.toby.jiw.user.User;
+import com.example.toby.jiw.common.config.AopConfig;
+import com.example.toby.jiw.common.config.DaoFactory;
+import com.example.toby.jiw.common.config.FactoryBean;
+import com.example.toby.jiw.domain.user.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +14,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;

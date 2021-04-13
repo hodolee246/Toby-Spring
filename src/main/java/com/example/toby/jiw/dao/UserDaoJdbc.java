@@ -1,14 +1,13 @@
 package com.example.toby.jiw.dao;
 
 import com.example.toby.jiw.dao.sql.SqlService;
-import com.example.toby.jiw.exception.DuplicateUserIdException;
-import com.example.toby.jiw.user.User;
+import com.example.toby.jiw.common.exception.DuplicateUserIdException;
+import com.example.toby.jiw.domain.user.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
 import java.util.List;
-import java.util.Map;
 
 public class UserDaoJdbc implements UserDao {
 

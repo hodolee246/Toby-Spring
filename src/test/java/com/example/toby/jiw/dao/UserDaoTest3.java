@@ -1,6 +1,6 @@
 package com.example.toby.jiw.dao;
 
-import com.example.toby.jiw.user.User;
+import com.example.toby.jiw.domain.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;

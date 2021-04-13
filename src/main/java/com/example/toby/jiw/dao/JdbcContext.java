@@ -1,6 +1,6 @@
 package com.example.toby.jiw.dao;
 
-import com.example.toby.jiw.전략패턴.StatementStrategy;
+import com.example.toby.jiw.dao.전략패턴.StatementStrategy;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

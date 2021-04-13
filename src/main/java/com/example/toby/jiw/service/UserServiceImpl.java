@@ -1,7 +1,7 @@
 package com.example.toby.jiw.service;
 
 import com.example.toby.jiw.dao.UserDao;
-import com.example.toby.jiw.user.User;
+import com.example.toby.jiw.domain.user.User;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 

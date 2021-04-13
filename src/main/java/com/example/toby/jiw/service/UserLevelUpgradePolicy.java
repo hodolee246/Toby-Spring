@@ -1,6 +1,6 @@
 package com.example.toby.jiw.service;
 
-import com.example.toby.jiw.user.User;
+import com.example.toby.jiw.domain.user.User;
 
 public interface UserLevelUpgradePolicy {
     boolean canUpgradeLevel(User user);

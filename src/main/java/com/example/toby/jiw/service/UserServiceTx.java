@@ -1,6 +1,6 @@
 package com.example.toby.jiw.service;
 
-import com.example.toby.jiw.user.User;
+import com.example.toby.jiw.domain.user.User;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;

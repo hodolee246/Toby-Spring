@@ -1,7 +1,7 @@
 package com.example.toby.jiw.dao;
 
-import com.example.toby.jiw.exception.DuplicateUserIdException;
-import com.example.toby.jiw.user.User;
+import com.example.toby.jiw.common.exception.DuplicateUserIdException;
+import com.example.toby.jiw.domain.user.User;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.util.List;
