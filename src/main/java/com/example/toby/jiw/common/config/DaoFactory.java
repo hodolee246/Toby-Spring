@@ -37,13 +37,15 @@ public class DaoFactory {
     }
 
     @Bean
-    public BaseSqlService sqlService() {
-        return new BaseSqlService(sqlReader(), sqlRegistry());
+    public DefaultSqlService sqlService() {
+        return new DefaultSqlService();
     }
 
     @Bean
     public JaxbXmlSqlReader sqlReader() {
-        return new JaxbXmlSqlReader("/sql/sqlmap.xml");
+        JaxbXmlSqlReader reader = new JaxbXmlSqlReader();
+        reader.setSqlmapFile("/sql/sqlmap.xml");
+        return reader;
     }
 
     @Bean

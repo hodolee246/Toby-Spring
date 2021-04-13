@@ -5,6 +5,7 @@ import com.example.toby.jiw.service.proxy.TransactionAdvice;
 import com.example.toby.jiw.service.UserService;
 import com.example.toby.jiw.service.UserServiceImpl;
 import com.example.toby.jiw.domain.user.User;
+import com.example.toby.jiw.service.proxy.learningtest.MessageFactoryBean;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
@@ -53,6 +54,12 @@ public class AopConfig {
     @Bean
     public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
         return new DefaultAdvisorAutoProxyCreator();
+    }
+
+    // factory bean
+    @Bean
+    public MessageFactoryBean message() {
+        return new MessageFactoryBean("Factory Bean");
     }
 
     @Autowired UserDao userDao;

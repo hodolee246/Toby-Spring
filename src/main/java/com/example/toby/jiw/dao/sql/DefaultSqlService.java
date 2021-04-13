@@ -2,9 +2,15 @@ package com.example.toby.jiw.dao.sql;
 
 import javax.annotation.PostConstruct;
 
-public class BaseSqlService implements SqlService {
-    protected SqlReader sqlReader;
-    protected SqlRegistry sqlRegistry;
+public class DefaultSqlService extends BaseSqlService {
+
+    private SqlReader sqlReader;
+    private SqlRegistry sqlRegistry;
+
+    public DefaultSqlService() {
+        setSqlReader(new JaxbXmlSqlReader());
+        setSqlRegistry(new HashMapSqlRegistry());
+    }
 
     public void setSqlReader(SqlReader sqlReader) {
         this.sqlReader = sqlReader;
@@ -14,6 +20,7 @@ public class BaseSqlService implements SqlService {
         this.sqlRegistry = sqlRegistry;
     }
 
+    @Override
     @PostConstruct
     public void loadSql() {
         this.sqlReader.read(this.sqlRegistry);
@@ -27,5 +34,4 @@ public class BaseSqlService implements SqlService {
             throw new SqlRetrievalFailureException(e);
         }
     }
-
 }
