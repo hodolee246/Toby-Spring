@@ -37,7 +37,7 @@ public class XmlSqlService implements SqlService, SqlRegistry, SqlReader {
         try {
             return this.sqlRegistry.findSql(key);
         } catch (SqlNotFoundException e) {
-            throw new SqlRetrievalFailureException(e);
+            throw new SqlRetrievalFailureException(e.getMessage(), e.getCause());
         }
     }
 

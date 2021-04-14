@@ -19,6 +19,13 @@
     </properties>
 
     <dependencies>
+        <!-- oxm -->
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-oxm -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-oxm</artifactId>
+            <version>5.3.6</version>
+        </dependency>
         <!-- aop -->
         <!-- https://mvnrepository.com/artifact/aopalliance/aopalliance -->
 <!--        <dependency>

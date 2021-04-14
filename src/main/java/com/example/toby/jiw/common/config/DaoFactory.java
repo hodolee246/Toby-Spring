@@ -9,11 +9,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.mail.MailSender;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
 import javax.sql.DataSource;
 
 @Configuration
 public class DaoFactory {
+
+    @Bean
+    public UserDaoJdbc userDao() {
+        return new UserDaoJdbc(sqlService(), dataSource());
+    }
 
     @Bean
     public DataSource dataSource() {
@@ -22,8 +28,8 @@ public class DaoFactory {
     }
 
     @Bean
-    public DataSourceTransactionManager transactionManager() {  // dataSource 의 커넥션을 가져와 트랜잭션 처리해야 하기에 DataSource 를 받음
-        return new DataSourceTransactionManager(dataSource());
+    public UserServiceImpl userService() {
+        return new UserServiceImpl(userDao(), mailSender());
     }
 
     @Bean
@@ -32,13 +38,15 @@ public class DaoFactory {
     }
 
     @Bean
-    public UserDaoJdbc userDao() {
-        return new UserDaoJdbc(sqlService(), dataSource());
+    public DataSourceTransactionManager transactionManager() {  // dataSource 의 커넥션을 가져와 트랜잭션 처리해야 하기에 DataSource 를 받음
+        return new DataSourceTransactionManager(dataSource());
     }
-
+    // ch7
     @Bean
-    public DefaultSqlService sqlService() {
-        return new DefaultSqlService();
+    public OxmSqlService sqlService() {
+        OxmSqlService sqlService = new OxmSqlService();
+        sqlService.setUnmarshaller(unmarshaller());
+        return sqlService;
     }
 
     @Bean
@@ -54,8 +62,11 @@ public class DaoFactory {
     }
 
     @Bean
-    public UserServiceImpl userService() {
-        return new UserServiceImpl(userDao(), mailSender());
+    public Jaxb2Marshaller unmarshaller() {
+        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+        marshaller.setContextPath("com.example.toby.jiw.dao.sql.jaxb");
+        return marshaller;
     }
+
 
 }

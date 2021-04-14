@@ -31,7 +31,7 @@ public class DefaultSqlService extends BaseSqlService {
         try {
             return this.sqlRegistry.findSql(key);
         } catch (SqlNotFoundException e) {
-            throw new SqlRetrievalFailureException(e);
+            throw new SqlRetrievalFailureException(e.getMessage(), e.getCause());
         }
     }
 }
