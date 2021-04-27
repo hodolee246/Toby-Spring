@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.mail.MailSender;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
@@ -46,6 +48,7 @@ public class DaoFactory {
     public OxmSqlService sqlService() {
         OxmSqlService sqlService = new OxmSqlService();
         sqlService.setUnmarshaller(unmarshaller());
+        sqlService.setSqlRegistry(sqlRegistry());
         return sqlService;
     }
 
@@ -57,8 +60,10 @@ public class DaoFactory {
     }
 
     @Bean
-    public HashMapSqlRegistry sqlRegistry() {
-        return new HashMapSqlRegistry();
+    public EmbeddedDbSqlRegistry sqlRegistry() {
+        EmbeddedDbSqlRegistry sqlRegistry = new EmbeddedDbSqlRegistry();
+        sqlRegistry.setDataSource(embeddedDatabase());
+        return sqlRegistry;
     }
 
     @Bean
@@ -68,5 +73,13 @@ public class DaoFactory {
         return marshaller;
     }
 
+    @Bean
+    public DataSource embeddedDatabase() {
+        return new EmbeddedDatabaseBuilder()
+                .setName("embeddedDatabase")
+                .setType(EmbeddedDatabaseType.HSQL)
+                .addScript("/sql/embedded-db-schema.sql")
+                .build();
+    }
 
 }

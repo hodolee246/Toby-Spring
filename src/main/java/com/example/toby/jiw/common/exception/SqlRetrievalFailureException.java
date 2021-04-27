@@ -1,4 +1,4 @@
-package com.example.toby.jiw.dao.sql;
+package com.example.toby.jiw.common.exception;
 
 public class SqlRetrievalFailureException extends RuntimeException {
     public SqlRetrievalFailureException(String message) {

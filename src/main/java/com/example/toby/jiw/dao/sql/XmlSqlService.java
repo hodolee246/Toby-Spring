@@ -1,5 +1,6 @@
 package com.example.toby.jiw.dao.sql;
 
+import com.example.toby.jiw.common.exception.SqlRetrievalFailureException;
 import com.example.toby.jiw.dao.UserDao;
 import com.example.toby.jiw.dao.sql.jaxb.SqlType;
 import com.example.toby.jiw.dao.sql.jaxb.Sqlmap;

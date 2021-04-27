@@ -1,5 +1,7 @@
 package com.example.toby.jiw.dao.sql;
 
+import com.example.toby.jiw.common.exception.SqlRetrievalFailureException;
+
 import java.util.Map;
 
 public class SimpleSqlService implements SqlService {

@@ -1,5 +1,7 @@
 package com.example.toby.jiw.dao.sql;
 
+import com.example.toby.jiw.common.exception.SqlRetrievalFailureException;
+
 import javax.annotation.PostConstruct;
 
 public class DefaultSqlService extends BaseSqlService {
