@@ -5,6 +5,7 @@ import com.example.toby.jiw.common.exception.DuplicateUserIdException;
 import com.example.toby.jiw.domain.user.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.List;

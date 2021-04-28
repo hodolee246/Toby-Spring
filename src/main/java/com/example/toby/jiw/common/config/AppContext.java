@@ -1,22 +1,29 @@
 package com.example.toby.jiw.common.config;
 
+import com.example.toby.jiw.dao.UserDao;
 import com.example.toby.jiw.dao.UserDaoJdbc;
 import com.example.toby.jiw.dao.sql.*;
-import com.example.toby.jiw.service.DummyMailSender;
 import com.example.toby.jiw.service.UserServiceImpl;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.*;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.mail.MailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
 @Configuration
-public class DaoFactory {
+@EnableTransactionManagement
+@ComponentScan(basePackages = "com.example.toby.jiw.dao")
+//@Import(SqlServiceContext.class)  ch7 680p~ @Import 및 @Profile 전부 ApplicationContext 에러로 인한 미실시
+public class AppContext {
+
+    @Autowired UserDao userDao;
 
     @Bean
     public UserDaoJdbc userDao() {
@@ -35,14 +42,17 @@ public class DaoFactory {
     }
 
     @Bean
-    public MailSender mailSender() {
-        return new DummyMailSender();
+    public MailSender mailSender() {    //
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost("mail.mycompany.com");
+        return mailSender;
     }
 
     @Bean
     public DataSourceTransactionManager transactionManager() {  // dataSource 의 커넥션을 가져와 트랜잭션 처리해야 하기에 DataSource 를 받음
         return new DataSourceTransactionManager(dataSource());
     }
+
     // ch7
     @Bean
     public OxmSqlService sqlService() {
@@ -82,4 +92,31 @@ public class DaoFactory {
                 .build();
     }
 
+//    @Configuration
+//    @Profile("production")
+//    public static class ProductionAppContext {
+//        @Bean
+//        public MailSender mailSender() {    //  운영용 메일
+//            JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+//            mailSender.setHost("localhost");
+//            return mailSender;
+//        }
+//    }
+//
+//    @Configuration
+//    @Profile("test")
+//    public static class TestAppContext {
+//        @Autowired
+//        UserDao userDao;
+//
+//        @Bean
+//        public TestUserServiceImpl testUserService() {
+//            return new TestUserServiceImpl(userDao, mailSender());
+//        }
+//
+//        @Bean
+//        public MailSender mailSender() {
+//            return new DummyMailSender();
+//        }
+//    }
 }

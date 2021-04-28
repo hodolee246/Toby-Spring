@@ -2,7 +2,7 @@ package com.example.toby.jiw.service;
 
 import com.example.toby.jiw.dao.UserDao;
 import com.example.toby.jiw.common.config.AopConfig;
-import com.example.toby.jiw.common.config.DaoFactory;
+import com.example.toby.jiw.common.config.AppContext;
 import com.example.toby.jiw.domain.user.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +16,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -34,11 +35,12 @@ import static com.example.toby.jiw.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOL
  *
  */
 @SpringBootTest
-@ContextConfiguration(classes = {DaoFactory.class, AopConfig.class})
+@ActiveProfiles("test")
+@ContextConfiguration(classes = {AppContext.class, AopConfig.class})
 public class UserServiceTest {
 
     @Autowired UserService userService;
-    @Autowired UserService testUserService;
+//    @Autowired UserService testUserService;
     @Autowired UserDao userDao;
     @Autowired DataSource dataSource;
 //    @Autowired DataSourceTransactionManager transactionManager;
@@ -144,7 +146,7 @@ public class UserServiceTest {
         try {
             userService.upgradeLevels(); // bean 등록 에러로 인한 미수행
             Assertions.fail("TestUserServiceException expected");
-        } catch (TestUserServiceException e) {
+        } catch (TestUserServiceImpl.TestUserServiceException e) {
 
         }
         checkLevelUpgraded(users.get(1), false);
@@ -202,29 +204,29 @@ public class UserServiceTest {
         userService.deleteAll();
     }
 
-    /**
-     * 자동 프록시 생성기 테스트용 TestUserServiceImpl
-     */
-    static class TestUserServiceImpl extends UserServiceImpl {
-
-        private String id = "madnite1";
-
-        public TestUserServiceImpl(UserDao userDao, MailSender mailSender) {
-            super(userDao, mailSender);
-        }
-
-        @Override
-        protected void upgradeLevel(User user) {
-            if(user.getId().equals(this.id)) throw new TestUserServiceException();
-            super.upgradeLevel(user);
-        }
-    }
-
-    /**
-     * 테스트용 Exception
-     */
-    static class TestUserServiceException extends RuntimeException {
-    }
+//    /**
+//     * 자동 프록시 생성기 테스트용 TestUserServiceImpl
+//     */
+//    static class TestUserServiceImpl extends UserServiceImpl {
+//
+//        private String id = "madnite1";
+//
+//        public TestUserServiceImpl(UserDao userDao, MailSender mailSender) {
+//            super(userDao, mailSender);
+//        }
+//
+//        @Override
+//        protected void upgradeLevel(User user) {
+//            if(user.getId().equals(this.id)) throw new TestUserServiceException();
+//            super.upgradeLevel(user);
+//        }
+//    }
+//
+//    /**
+//     * 테스트용 Exception
+//     */
+//    static class TestUserServiceException extends RuntimeException {
+//    }
 
     /**
      * 테스트용 MockMailSender 클래스

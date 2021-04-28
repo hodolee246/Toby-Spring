@@ -1,6 +1,6 @@
 package com.example.toby.jiw.common;
 
-import com.example.toby.jiw.common.config.DaoFactory;
+import com.example.toby.jiw.common.config.AppContext;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ import java.util.Set;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@ContextConfiguration(classes = { DaoFactory.class })
+@ContextConfiguration(classes = { AppContext.class })
 @SpringBootTest
 public class JUnitTest {
 

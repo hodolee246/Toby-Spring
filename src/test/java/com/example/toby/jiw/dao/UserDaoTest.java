@@ -2,7 +2,7 @@ package com.example.toby.jiw.dao;
 
 import com.example.toby.jiw.common.config.AopConfig;
 import com.example.toby.jiw.common.exception.DuplicateUserIdException;
-import com.example.toby.jiw.common.config.DaoFactory;
+import com.example.toby.jiw.common.config.AppContext;
 import com.example.toby.jiw.domain.user.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +25,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @SpringBootTest
-@ContextConfiguration(classes = { DaoFactory.class, AopConfig.class })
+@ContextConfiguration(classes = { AppContext.class, AopConfig.class })
 public class UserDaoTest {
 
     User user1;
@@ -33,11 +33,9 @@ public class UserDaoTest {
     User user3;
     User user4;
 
-    @Autowired
-    UserDao dao;
+    @Autowired UserDao dao;
 
-    @Autowired
-    DataSource dataSource;
+    @Autowired DataSource dataSource;
 
     @BeforeEach
     public void setUp() {
