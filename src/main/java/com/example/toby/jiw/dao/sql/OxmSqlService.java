@@ -42,7 +42,7 @@ public class OxmSqlService implements SqlService {
     @Setter
     private class OxmSqlReader implements SqlReader {
         private Unmarshaller unmarshaller;
-        private Resource sqlmap = new ClassPathResource("/sql/sqlmap.xml", UserDao.class);
+        private Resource sqlmap = new ClassPathResource("/sql/sqlmap.xml");
 
         @Override
         public void read(SqlRegistry sqlRegistry) {

@@ -1,11 +1,16 @@
 package com.example.toby.jiw.common.config;
 
+import com.example.toby.jiw.common.config.annotaion.EnableSqlService;
 import com.example.toby.jiw.dao.UserDao;
 import com.example.toby.jiw.dao.UserDaoJdbc;
 import com.example.toby.jiw.dao.sql.*;
+import com.example.toby.jiw.service.DummyMailSender;
+import com.example.toby.jiw.service.TestUserServiceImpl;
 import com.example.toby.jiw.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -18,10 +23,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 
 @Configuration
-@EnableTransactionManagement
 @ComponentScan(basePackages = "com.example.toby.jiw.dao")
+@EnableTransactionManagement
+@EnableSqlService
+//@PropertySource("/application.properties")    // ApplicationContext 에러로 인한 미실시
 //@Import(SqlServiceContext.class)  ch7 680p~ @Import 및 @Profile 전부 ApplicationContext 에러로 인한 미실시
-public class AppContext {
+public class AppContext implements SqlMapConfig {
 
     @Autowired UserDao userDao;
 
@@ -54,11 +61,23 @@ public class AppContext {
     }
 
     // ch7
+
+//    @Bean
+//    public SqlMapConfig sqlMapConfig() {
+//        return new UserSqlMapConfig();
+//    }
+
+    @Override
+    public Resource getSqlMapResource() {
+        return new ClassPathResource("/sql/sqlmap.xml", UserDao.class);
+    }
+
     @Bean
     public OxmSqlService sqlService() {
         OxmSqlService sqlService = new OxmSqlService();
         sqlService.setUnmarshaller(unmarshaller());
         sqlService.setSqlRegistry(sqlRegistry());
+        sqlService.setSqlmap(getSqlMapResource());
         return sqlService;
     }
 
