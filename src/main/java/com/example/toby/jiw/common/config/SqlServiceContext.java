@@ -27,13 +27,6 @@ public class SqlServiceContext {
     }
 
     @Bean
-    public JaxbXmlSqlReader sqlReader() {
-        JaxbXmlSqlReader reader = new JaxbXmlSqlReader();
-        reader.setSqlmapFile("/sql/sqlmap.xml");
-        return reader;
-    }
-
-    @Bean
     public EmbeddedDbSqlRegistry sqlRegistry() {
         EmbeddedDbSqlRegistry sqlRegistry = new EmbeddedDbSqlRegistry();
         sqlRegistry.setDataSource(embeddedDatabase());

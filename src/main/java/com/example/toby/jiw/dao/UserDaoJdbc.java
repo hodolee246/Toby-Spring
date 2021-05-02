@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.util.List;
 
+@Repository
 public class UserDaoJdbc implements UserDao {
 
     private SqlService sqlService;
@@ -26,8 +27,6 @@ public class UserDaoJdbc implements UserDao {
 
         return user;
     };
-
-    public UserDaoJdbc() {}
 
     public UserDaoJdbc(SqlService sqlService, DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);

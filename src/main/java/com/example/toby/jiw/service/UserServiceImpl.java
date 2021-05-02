@@ -2,14 +2,18 @@ package com.example.toby.jiw.service;
 
 import com.example.toby.jiw.dao.UserDao;
 import com.example.toby.jiw.domain.user.User;
+import lombok.Setter;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * UserService 트랜잭션 코드를 제거한 비즈니스 로직
  */
+@Setter
+@Service("UserService")
 public class UserServiceImpl implements UserService {
 
     public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
@@ -21,6 +25,9 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(UserDao userDao, MailSender mailSender) {
         this.userDao = userDao;
         this.mailSender = mailSender;
+    }
+
+    public UserServiceImpl() {
     }
 
     @Override

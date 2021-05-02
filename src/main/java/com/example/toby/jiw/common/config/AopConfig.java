@@ -2,6 +2,7 @@ package com.example.toby.jiw.common.config;
 
 import com.example.toby.jiw.service.proxy.TransactionAdvice;
 import com.example.toby.jiw.service.UserService;
+import com.example.toby.jiw.service.proxy.learningtest.Message;
 import com.example.toby.jiw.service.proxy.learningtest.MessageFactoryBean;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.framework.ProxyFactoryBean;
@@ -14,9 +15,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 public class AopConfig {
-
-    @Autowired
-    UserService userService;
 
     @Autowired
     PlatformTransactionManager transactionManager;
@@ -38,14 +36,14 @@ public class AopConfig {
         return expression;
     }
 
-    @Bean
-    public ProxyFactoryBean userServiceProxyFactoryBean() {
-        transactionAdvisor();
-        ProxyFactoryBean factoryBean = new ProxyFactoryBean();
-        factoryBean.setTarget(userService);
-        factoryBean.setInterceptorNames("transactionAdvisor");
-        return factoryBean;
-    }
+//    @Bean
+//    public ProxyFactoryBean userServiceProxyFactoryBean() {
+//        transactionAdvisor();
+//        ProxyFactoryBean factoryBean = new ProxyFactoryBean();
+//        factoryBean.setTarget(userService);
+//        factoryBean.setInterceptorNames("transactionAdvisor");
+//        return factoryBean;
+//    }
 
     @Bean
     public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
@@ -54,8 +52,13 @@ public class AopConfig {
 
     // factory bean
     @Bean
-    public MessageFactoryBean message() {
+    public MessageFactoryBean messageFactoryBean() {
         return new MessageFactoryBean("Factory Bean");
+    }
+
+    @Bean
+    public Message message() throws Exception {
+        return messageFactoryBean().getObject();
     }
 
 }

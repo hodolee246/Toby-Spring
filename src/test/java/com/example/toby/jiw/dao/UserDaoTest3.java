@@ -14,12 +14,12 @@ public class UserDaoTest3 {
 
     UserDaoJdbc dao;
 
-    @BeforeEach
-    public void setUp() throws SQLException {
-        dao = new UserDaoJdbc();
-        dao.setDataSource(new SingleConnectionDataSource("jdbc:mysql://localhost:3306/sys?serverTimezone=UTC&characterEncoding=UTF-8", "root", "1234", true));
-        dao.deleteAll();
-    }
+//    @BeforeEach
+//    public void setUp() throws SQLException {
+//        dao = new UserDaoJdbc();
+//        dao.setDataSource(new SingleConnectionDataSource("jdbc:mysql://localhost:3306/sys?serverTimezone=UTC&characterEncoding=UTF-8", "root", "1234", true));
+//        dao.deleteAll();
+//    }
 
     @Test
     public void add() throws SQLException {
